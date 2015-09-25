@@ -7,6 +7,17 @@
 # eg:
 #   sudo ./make-centos-bootstick /dev/sdb
 
+# This probably works for and on any RedHat based distro, but has not been tested.
+
+# LICENSE
+# MIT License
+
+# TODO
+# add flags for pointing to different ks and iso
+# Don't use such a dumb "tmp_dir"
+# More complete cleanup
+# Flag to not cleanup
+
 dev=$1
 tmp_dir="./bootstick"
 # Since the mbr.bin is kept in different places in different versions.
