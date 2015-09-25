@@ -1,0 +1,114 @@
+#!/bin/sh
+
+# Insert a usb stick (at least 1G) into a CentOS 7 machine.
+# yum -y install syslinux screen dosfstools
+# put your kickstart in $PWD and name it ks.cfg
+# Run this script as root, passing the /dev/sdX you are going to use
+# eg:
+#   sudo ./make-centos-bootstick /dev/sdb
+
+dev=$1
+tmp_dir="./bootstick"
+# Since the mbr.bin is kept in different places in different versions.
+mbr=$(rpm -ql syslinux | grep '/mbr.bin$')
+mirror=http://mirrors.cmich.edu/centos/7/isos/x86_64
+iso=CentOS-7-x86_64-NetInstall-1503.iso
+md5sum=md5sum.txt
+ks=ks.cfg
+
+warn() {
+    echo "$@" >&2
+}
+
+die() {
+    status=$1
+    shift
+    warn "$@"
+    exit $status
+}
+
+fetch_iso() {
+    curl $mirror/$iso >$iso
+    curl $mirror/$md5sum >$md5sum
+    md5sum $iso >md5sum.local
+    grep -F -f md5sum.local $md5sum || die 8 "Download of $iso is incorrect"
+    rm md5sum.local
+}
+
+require_unmounted() {
+    mount | grep -F "$dev" && die 1 "Not going to fsck mounted device $dev"
+}
+
+partition() {
+cat <<EOM
+d (delete present partitions)
+n (create partition, accept defaults for type, number, and first sector)
++250M (defined size as 250MB)
+t
+c (change type to W95 FAT32 (LBA) - other FAT types may work, but I have not tried)
+a (make bootable)
+n (create partition, accept defaults for type, number, first sector, and size)
+w (write changes to device)
+Press Enter to Continue (you will lose these instructions)
+EOM
+    read
+    screen fdisk $dev
+}
+
+format_partitions() {
+    mkfs -t vfat -n "BOOT" ${dev}1
+    mkfs -L "DATA" ${dev}2
+}
+
+write_mbr() {
+     dd conv=notrunc bs=440 count=1 if=$mbr of=$dev
+}
+
+install_syslinux() {
+    syslinux ${dev}1
+}
+
+mount_parts() {
+    mkdir -p BOOT && mount ${dev}1 BOOT
+    mkdir -p DATA && mount ${dev}2 DATA
+    mkdir -p DVD  && mount $iso    DVD
+}
+
+make_boot() {
+    cp -v DVD/isolinux/* BOOT/
+    mv -v BOOT/isolinux.cfg BOOT/syslinux.cfg
+    edit_syslinux
+    cp -v $ks BOOT/ || die 16 "Couldn't copy $ks to BOOT/"
+    
+}
+
+make_data() {
+    cp -v $iso DATA/
+}
+
+clean_up() {
+    umount ${dev}1
+    umount ${dev}2
+    umount $iso
+}
+
+edit_syslinux() {
+    sed -i \
+    '/label linux/,/^$/s#LABEL=.* quiet#LABEL=DATA:/ ks=hd:LABEL=BOOT:/ks.cfg#' \
+    BOOT/syslinux.cfg
+}
+
+mkdir -p $tmp_dir || die 2 "Can't make $tmp_dir"
+cp -v $ks $tmp_dir/ || die 32 "Can't copy $ks to $tmp_dir"
+cd $tmp_dir || die 2 "Can't cd to $tmp_dir"
+test -f $iso || fetch_iso
+
+require_unmounted
+partition
+format_partitions
+write_mbr
+install_syslinux
+mount_parts
+make_boot
+make_data
+clean_up
