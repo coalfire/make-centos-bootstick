@@ -2,9 +2,7 @@
 
 Generate a usb bootstick for CentOS.
 
-Insert a usb stick (at least 1G) into a CentOS 7 machine.
-
-Requirements:
+## Requirements
 
  * rpm
  * syslinux
@@ -15,7 +13,9 @@ Requirements:
 yum -y install syslinux screen dosfstools
 ```
 
-USAGE (as root): 
+## Usage (as root)
+
+Insert a usb stick (at least 1G) into a CentOS 7 machine.
 
 ```sh
 make-centos-bootstick [-r REMOTE_KS ] [-k LOCAL_KS] [-s CUSTOM_SYSLINUX] \
@@ -29,3 +29,6 @@ but has only been tested with CentOS 7.
 
 This is pretty much just https://gist.github.com/pauljeff/4b9ad551cb6c35870d7c
 turned into a script.
+
+## License
+MIT
