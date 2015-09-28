@@ -97,7 +97,7 @@ make_boot() {
 }
 
 make_data() {
-    mv -v $iso DATA/ || die 1 "couldn't move $iso to DATA/"
+    cp -v $iso DATA/ || die 1 "couldn't copy $iso to DATA/"
 }
 
 clean_up() {
@@ -122,6 +122,8 @@ edit_syslinux() {
         BOOT/syslinux.cfg
     fi
 }
+
+mkdir -p $tmp_dir || die 2 "Can't make $tmp_dir"
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -164,8 +166,6 @@ done
 test $# -eq 1 || die 1 "$usage"
 dev=$1
 
-mkdir -p $tmp_dir || die 2 "Can't make $tmp_dir"
-cp -v $ks $tmp_dir/ || die 32 "Can't copy $ks to $tmp_dir"
 cd $tmp_dir || die 2 "Can't cd to $tmp_dir"
 test -f $iso || fetch_iso
 
