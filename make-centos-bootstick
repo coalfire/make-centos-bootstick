@@ -13,10 +13,8 @@
 # MIT License
 
 # TODO
-# add flags for pointing to different ks and iso
 # Don't use such a dumb "tmp_dir"
 # More complete cleanup
-# Flag to not cleanup
 
 tmp_dir="./bootstick"
 # Since the mbr.bin is kept in different places in different versions.
