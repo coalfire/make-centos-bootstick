@@ -82,7 +82,7 @@ install_syslinux() {
 mount_parts() {
     mkdir -p BOOT && mount ${dev}1 BOOT
     mkdir -p DATA && mount ${dev}2 DATA
-    mkdir -p DVD  && mount $iso    DVD
+    mkdir -p DVD  && mount -t iso9660 -o loop $PWD/$iso    $PWD/DVD
 }
 
 make_boot() {
