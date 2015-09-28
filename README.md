@@ -1,6 +1,12 @@
 # make-centos-bootstick
 
-Generate a usb bootstick for CentOS.
+Generate a usb bootstick for CentOS,
+optionally with a custom kickstart, 
+custom sysconfig (boot menu),
+or remote kickstart.
+
+The default iso is CentOS 7.
+The iso or mirror may be customized with command line flags.
 
 ## Requirements
 
