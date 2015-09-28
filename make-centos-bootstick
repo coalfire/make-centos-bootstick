@@ -88,7 +88,7 @@ mount_parts() {
 make_boot() {
     cp -v DVD/isolinux/* BOOT/
     mv -v BOOT/isolinux.cfg BOOT/syslinux.cfg
-    if [ -n "$syslinux"]; then
+    if [ -n "$syslinux" ]; then
         mv -v $syslinux BOOT/syslinux.cfg \
         || die 1 "couldn't move $syslinux to Boot/"
     else
