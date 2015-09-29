@@ -2,7 +2,6 @@
 
 # Insert a usb stick (at least 1G) into a CentOS 7 machine.
 # yum -y install syslinux screen dosfstools
-# Any custom kickstart or syslinux.cfg need to be in your $PWD
 # Run this script as root, passing the /dev/sdX you are going to use
 # eg:
 #   sudo ./make-centos-bootstick /dev/sdb
@@ -15,7 +14,6 @@
 # TODO
 # Don't use such a dumb "tmp_dir"
 # More complete cleanup
-# get basename of custom files so we can specify paths
 
 tmp_dir="./bootstick"
 # Since the mbr.bin is kept in different places in different versions.
@@ -144,11 +142,13 @@ while [ $# -gt 0 ]; do
       -c)
         syslinux=$2
         cp $syslinux $tmp_dir/
+        syslinux=$(basename $syslinux)
         shift 2
         ;;
       -k)
         ks=$2
         cp $ks $tmp_dir/
+        ks=$(basename $ks)
         shift 2
         ;;
       -r)
@@ -159,6 +159,7 @@ while [ $# -gt 0 ]; do
       -s)
         splash=$2
         cp $splash $tmp_dir/
+        splash=$(basename $splash)
         shift 2
         ;;
       --no-clean)

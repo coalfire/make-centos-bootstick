@@ -29,8 +29,6 @@ make-centos-bootstick [-r REMOTE_KS ] [-k LOCAL_KS] [-c CUSTOM_SYSLINUX] \
 [-i ISO] [-u ISO_URL] [-s SPLASH_IMAGE ] [--no-clean] DEVICE
 ```
 
-Any custom kickstart or syslinux.cfg need to be in your `$PWD`.
-
 This probably works for and on any RedHat based distro,
 but has only been tested with CentOS 7.
 
