@@ -1,9 +1,10 @@
 # make-centos-bootstick
 
 Generate a usb bootstick for CentOS,
-optionally with a custom kickstart, 
+optionally with a
+custom kickstart or remote kickstart,
 custom sysconfig (boot menu),
-or remote kickstart.
+and custom splash image.
 
 The default iso is CentOS 7.
 The iso or mirror may be customized with command line flags.
@@ -24,8 +25,8 @@ yum -y install syslinux screen dosfstools
 Insert a usb stick (at least 1G) into a CentOS 7 machine.
 
 ```sh
-make-centos-bootstick [-r REMOTE_KS ] [-k LOCAL_KS] [-s CUSTOM_SYSLINUX] \
-[-i ISO] [-u ISO_URL] [--no-clean] DEVICE
+make-centos-bootstick [-r REMOTE_KS ] [-k LOCAL_KS] [-c CUSTOM_SYSLINUX] \
+[-i ISO] [-u ISO_URL] [-s SPLASH_IMAGE ] [--no-clean] DEVICE
 ```
 
 Any custom kickstart or syslinux.cfg need to be in your `$PWD`.

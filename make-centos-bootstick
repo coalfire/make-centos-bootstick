@@ -24,8 +24,8 @@ mirror=http://mirrors.cmich.edu/centos/7/isos/x86_64
 iso=CentOS-7-x86_64-NetInstall-1503.iso
 md5sum=md5sum.txt
 ks=ks.cfg
-usage="USAGE: $0 [-r REMOTE_KS ] [-k LOCAL_KS] [-s CUSTOM_SYSLINUX] [-i ISO] \
-[-u ISO_URL] [--no-clean] DEVICE"
+usage="USAGE: $0 [-r REMOTE_KS ] [-k LOCAL_KS] [-c CUSTOM_SYSLINUX] [-i ISO] \
+[-u ISO_URL] [-s SPLASH_IMAGE ] [--no-clean] DEVICE"
 
 warn() {
     echo "$@" >&2
@@ -55,8 +55,8 @@ cat <<EOM
 d (delete present partitions)
 n (create partition, accept defaults for type, number, and first sector)
 +250M (defined size as 250MB)
-t
-c (change type to W95 FAT32 (LBA) - other FAT types may work, but I have not tried)
+t (change type)
+c (code for W95 FAT32 (LBA) - other FAT types may work, but I have not tried)
 a (make bootable)
 n (create partition, accept defaults for type, number, first sector, and size)
 w (write changes to device)
@@ -88,11 +88,16 @@ mount_parts() {
 make_boot() {
     cp -v DVD/isolinux/* BOOT/
     mv -v BOOT/isolinux.cfg BOOT/syslinux.cfg
+
     if [ -n "$syslinux" ]; then
         mv -v $syslinux BOOT/syslinux.cfg \
         || die 1 "couldn't move $syslinux to Boot/"
     else
         edit_syslinux
+    fi
+
+    if [ -n "$splash" ]; then
+        mv -v $splash BOOT/ || die 1 "couldn't move $splash to Boot/"
     fi
 }
 
@@ -121,6 +126,12 @@ edit_syslinux() {
         '/label linux/,/^$/s#LABEL=.* quiet#LABEL=DATA:/#' \
         BOOT/syslinux.cfg
     fi
+
+    if [ -n "$splash" ]; then
+        sed -i \
+        's/\(menu background \).*/\1'"$splash"'/I'
+        BOOT/syslinux.cfg
+    fi
 }
 
 mkdir -p $tmp_dir || die 2 "Can't make $tmp_dir"
@@ -130,19 +141,24 @@ while [ $# -gt 0 ]; do
       -h)
         die 0 $usage
         ;;
+      -c)
+        syslinux=$2
+        cp $syslinux $tmp_dir/
+        shift 2
+        ;;
+      -k)
+        ks=$2
+        cp $ks $tmp_dir/
+        shift 2
+        ;;
       -r)
         ks=$2
         ksremote=true
         shift 2
         ;;
       -s)
-        syslinux=$2
-        cp $syslinux $tmp_dir
-        shift 2
-        ;;
-      -k)
-        ks=$2
-        cp $ks $tmp_dir
+        splash=$2
+        cp $splash $tmp_dir/
         shift 2
         ;;
       --no-clean)
