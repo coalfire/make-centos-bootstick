@@ -13,11 +13,10 @@ The iso or mirror may be customized with command line flags.
 
  * rpm
  * syslinux
- * screen
  * dosfstools
 
 ```sh
-yum -y install syslinux screen dosfstools
+yum -y install syslinux dosfstools
 ```
 
 ## Usage (as root)

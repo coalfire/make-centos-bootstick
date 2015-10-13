@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Insert a usb stick (at least 1G) into a CentOS 7 machine.
-# yum -y install syslinux screen dosfstools
+# yum -y install syslinux dosfstools
 # Run this script as root, passing the /dev/sdX you are going to use
 # eg:
 #   sudo ./make-centos-bootstick /dev/sdb
