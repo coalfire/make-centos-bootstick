@@ -49,19 +49,38 @@ require_unmounted() {
 }
 
 partition() {
-cat <<EOM
-d (delete present partitions)
-n (create partition, accept defaults for type, number, and first sector)
-+250M (defined size as 250MB)
-t (change type)
-c (code for W95 FAT32 (LBA) - other FAT types may work, but I have not tried)
-a (make bootable)
-n (create partition, accept defaults for type, number, first sector, and size)
-w (write changes to device)
-Press Enter to Continue (you will lose these instructions)
-EOM
-    read
-    screen fdisk $dev
+    # This is dirty, but...
+    # d delete four partitions
+    # n new partition, accepting defaults for type, number, first sector
+    # +250M set size
+    # t change type to:
+    # c W95 FAT32 (LBA)
+    # a make bootable
+    # n new partition, accepting defaults for type, number, first sector, size
+    # w write changes to disk
+    echo 'd
+
+d
+
+d
+
+d
+
+n
+
+
+
++250M
+t
+c
+a
+n
+
+
+
+
+w
+' | fdisk $dev
 }
 
 format_partitions() {
