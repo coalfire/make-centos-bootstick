@@ -19,7 +19,7 @@ tmp_dir="./bootstick"
 # Since the mbr.bin is kept in different places in different versions.
 mbr=$(rpm -ql syslinux | grep '/mbr.bin$')
 mirror=http://mirrors.cmich.edu/centos/7/isos/x86_64
-iso=CentOS-7-x86_64-NetInstall-1503.iso
+iso=CentOS-7-x86_64-NetInstall-1511.iso
 md5sum=md5sum.txt
 ks=ks.cfg
 usage="USAGE: $0 [-r REMOTE_KS ] [-k LOCAL_KS] [-c CUSTOM_SYSLINUX] [-i ISO] \
