@@ -16,7 +16,7 @@
 # More complete cleanup
 # Allow customizing arch, install type, mirror
 
-# Edit these three 
+# Edit these as needed
 arch=x86_64
 mirror=http://mirrors.cmich.edu/centos/7/isos
 install_type=NetInstall
