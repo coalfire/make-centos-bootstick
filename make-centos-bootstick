@@ -14,13 +14,18 @@
 # TODO
 # Don't use such a dumb "tmp_dir"
 # More complete cleanup
+# Allow customizing arch, install type, mirror
+
+# Edit these three 
+arch=x86_64
+mirror=http://mirrors.cmich.edu/centos/7/isos
+install_type=NetInstall
+readme=0_README.txt
+sumfile=sha256sum.txt
 
 tmp_dir="./bootstick"
 # Since the mbr.bin is kept in different places in different versions.
 mbr=$(rpm -ql syslinux | grep '/mbr.bin$')
-mirror=http://mirrors.cmich.edu/centos/7/isos/x86_64
-iso=CentOS-7-x86_64-NetInstall-1511.iso
-md5sum=md5sum.txt
 ks=ks.cfg
 usage="USAGE: $0 [-r REMOTE_KS ] [-k LOCAL_KS] [-c CUSTOM_SYSLINUX] [-i ISO] \
 [-u ISO_URL] [-s SPLASH_IMAGE ] [--no-clean] DEVICE"
@@ -36,12 +41,14 @@ die() {
     exit $status
 }
 
+get_current_iso_name() {
+    iso="$(curl "$mirror/$arch/$readme" | grep "CentOS-7-$arch-$install_type")"
+}
+
 fetch_iso() {
-    curl $mirror/$iso >$iso
-    curl $mirror/$md5sum >$md5sum
-    md5sum $iso >md5sum.local
-    grep -F -f md5sum.local $md5sum || die 8 "Download of $iso is incorrect"
-    rm md5sum.local
+    curl -O $mirror/$arch/$iso
+    curl -O $mirror/$arch/$sumfile
+    sha256sum --ignore-missing -c $sumfile || die 8 "$iso download incorrect"
 }
 
 require_unmounted() {
@@ -203,6 +210,7 @@ test $# -eq 1 || die 1 "$usage"
 dev=$1
 
 cd $tmp_dir || die 2 "Can't cd to $tmp_dir"
+get_current_iso_name
 test -f $iso || fetch_iso
 
 require_unmounted
