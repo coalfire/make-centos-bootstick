@@ -48,7 +48,7 @@ get_current_iso_name() {
 fetch_iso() {
     curl -O $mirror/$arch/$iso
     curl -O $mirror/$arch/$sumfile
-    sha256sum --ignore-missing -c $sumfile || die 8 "$iso download incorrect"
+    grep "$iso" $sumfile | sha256sum -c - || die 8 "$iso download incorrect"
 }
 
 require_unmounted() {
