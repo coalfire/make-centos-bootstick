@@ -1,3 +1,7 @@
+# UNMAINTAINED.
+
+See https://github.com/coalfire/cent-mkiso for a simpler (but less featureful) implementation.
+
 # make-centos-bootstick
 
 Generate a usb bootstick for CentOS,
